@@ -1,5 +1,6 @@
 b2b_env/
-data/GOD_encoders/
-data/NSD_encoders/
-data/Processed_data/
+data/GOD_encoders
+data/NSD_encoders
+data/Processed_data
 __pycache__/
+.ipynb_checkpoints/

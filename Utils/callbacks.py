@@ -6,7 +6,7 @@ import scipy
 import os
 import skimage.color
 from Utils.image_loss import *
-from scipy.misc import imsave, imread
+from Utils.misc_compat import imsave, imread
 from Utils.image_functions import image_collage
 import io
 import matplotlib.pyplot as plt

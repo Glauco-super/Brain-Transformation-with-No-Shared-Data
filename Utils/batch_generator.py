@@ -4,7 +4,7 @@ from keras.backend import random_normal_variable
 import numpy as np
 import os
 import random
-from scipy.misc import imread
+from Utils.misc_compat import imread
 import pandas as pd
 # from torch import dtype
 from Utils.image_functions import image_prepare, rand_shift

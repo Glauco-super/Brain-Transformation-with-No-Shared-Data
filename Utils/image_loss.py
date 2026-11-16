@@ -11,7 +11,7 @@ from keras import backend as K
 from keras.optimizers import SGD,Adam, RMSprop
 import numpy as np
 from keras.layers import Lambda
-from scipy.misc import imresize
+from Utils.misc_compat import imresize
 from keras.layers import Dense, Dropout, Flatten, Activation
 from keras.applications.inception_resnet_v2 import InceptionResNetV2
 from keras.applications.inception_resnet_v2 import preprocess_input

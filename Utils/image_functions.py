@@ -3,12 +3,12 @@ Description:
 General image functions
 """
 import numpy as np
-from scipy.misc import imresize
+from Utils.misc_compat import imresize
 from scipy.ndimage import shift
-from scipy.misc import imsave
+from Utils.misc_compat import imsave
 
 import random
-from scipy.misc import imread,imsave
+from Utils.misc_compat import imread,imsave
 import os
 
 

@@ -5,7 +5,7 @@ import torch
 import os.path
 import scipy.io
 import nibabel as nib
-from scipy.misc import imresize
+from Utils.misc_compat import imresize
 from PIL import Image
 # import torch.nn as nn
 from scipy.ndimage import convolve
