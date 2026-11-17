@@ -32,9 +32,10 @@ shift_inv = 0
 Tv_reg = 0.3
 
 # dir_ ='data/ImageNet_Files/images/'
-dir ='/net/mraid11/export/data/romanb/GenericObjectDecoding/data/'
-
-img_norm = np.load(dir+'/images/img_norm.npz')
+# dir ='/net/mraid11/export/data/romanb/GenericObjectDecoding/data/'  (server degli autori)
+# img_norm serve solo a mae()/mse() qui sotto (loss sulle immagini); il file non e' distribuito.
+from Utils.params.param_paths import IMG_NORM_FILE
+img_norm = np.load(IMG_NORM_FILE) if (IMG_NORM_FILE is not None and os.path.exists(IMG_NORM_FILE)) else None
 
 vgg_ch = {}
 vgg_ch['block1_conv2'] = 64

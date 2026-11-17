@@ -5,6 +5,7 @@ import numpy as np
 import os
 import random
 from Utils.misc_compat import imread
+from Utils.params.param_paths import EXT_IMAGES_DIR, GOD_TEST_CSV, EXT_FILES_CACHE
 import pandas as pd
 # from torch import dtype
 from Utils.image_functions import image_prepare, rand_shift
@@ -190,7 +191,7 @@ class batch_generator_enc_multi(batch_generator_3_subj):
 
 class batch_generator_enc_self_augm(Sequence):
     def __init__(self, X, Y, train_labels = None, batch_size = 32, batch_unpaired = 32, max_shift = 5, img_len = 112
-                 ,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150):
+                 ,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150):
         self.gen_enc        = batch_generator_enc(X, Y, batch_size=batch_size,max_shift = max_shift, labels = train_labels)
         self.gen_ext_im     = batch_generator_external_images(img_size = img_len, batch_size=batch_unpaired,ext_dir = ext_dir, num_ext_per_class=num_ext_per_class)
     def on_epoch_end(self):
@@ -208,7 +209,7 @@ class batch_generator_enc_self_augm(Sequence):
 
 class batch_generator_enc_self_corr(Sequence):
     def __init__(self, X, Y,corr_mean, train_labels = None, batch_size = 32, batch_unpaired = 32, max_shift = 5, img_len = 112
-                 ,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150,use_saved = 0,augm_and_not_ext = 0):
+                 ,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150,use_saved = 0,augm_and_not_ext = 0):
         self.gen_enc        = batch_generator_enc(X, Y, batch_size=batch_size,max_shift = max_shift, labels = train_labels)
         self.gen_ext_im     = batch_generator_external_images(img_size = img_len, batch_size=batch_unpaired,ext_dir = ext_dir, num_ext_per_class=num_ext_per_class,use_saved =use_saved )
         self.corr_mean = corr_mean
@@ -241,16 +242,16 @@ class batch_generator_external_images(Sequence):
     """
     Gets images from an image directory
     """
-    def __init__(self, img_size = 112, batch_size=16,ext_dir = '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images',\
+    def __init__(self, img_size = 112, batch_size=16,ext_dir = EXT_IMAGES_DIR,\
          num_ext_per_class=150,use_saved =0, to_grey =0):
         self.img_size = img_size
         self.batch_size = batch_size
         files = os.listdir(ext_dir)
         self.img_files = []
-        self.test_im = pd.read_csv('/net/mraid11/export/data/navvew/SSReconstnClass/data/Kamitani_Files/images/imageID_test.csv', header=None)
+        self.test_im = pd.read_csv(GOD_TEST_CSV, header=None)
         self.to_grey = to_grey
         self.num_ext_per_class = num_ext_per_class
-        self.save_file_dir = '/net/mraid11/export/data/navvew/SSReconstnClass/data/Kamitani_Files/images/ext_images_files'
+        self.save_file_dir = EXT_FILES_CACHE
         if(use_saved == 1):
             with open(self.save_file_dir, "rb") as fp:   # Unpickling
                 self.img_files = pickle.load(fp)
@@ -340,7 +341,7 @@ class batch_generator_test_fmri(Sequence):
 
 class batch_generator_encdec(Sequence):
     def __init__(self, X, Y, Y_test, test_labels, train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_dec        = batch_generator_dec(X, Y, batch_size=batch_paired, labels = train_labels)
         self.gen_enc        = batch_generator_enc(X, Y, batch_size=batch_paired,max_shift = max_shift_enc, labels = train_labels)
@@ -372,7 +373,7 @@ class batch_generator_encdec(Sequence):
 
 class batch_generator_encdec_extra_encdec(Sequence):
     def __init__(self, X, Y, Y_test, test_labels, train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_dec        = batch_generator_dec(X, Y, batch_size=batch_paired, labels = train_labels)
         self.gen_enc        = batch_generator_enc(X, Y, batch_size=batch_paired,max_shift = max_shift_enc, labels = train_labels)
@@ -474,7 +475,7 @@ class batch_generator_2_subj_new(Sequence):
 
 class batch_generator_subj_transf(Sequence):
     def __init__(self, X_1, Y_1, X_2, Y_2, train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_shared        = batch_generator_2_subj(X_1,X_2, Y_1,Y_2, batch_size=batch_paired, labels = train_labels)
         self.gen_ext_im     = batch_generator_external_images(img_size = img_len, batch_size=batch_paired,ext_dir = ext_dir, num_ext_per_class=num_ext_per_class)
@@ -494,7 +495,7 @@ class batch_generator_subj_transf(Sequence):
 
 class batch_generator_encoder_2_subj(Sequence):
     def __init__(self, X_1, Y_1, X_2, Y_2, train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_shared        = batch_generator_2_subj(X_1,X_2, Y_1,Y_2, batch_size=batch_paired, labels = train_labels)
         self.gen_ext_im     = batch_generator_external_images(img_size = img_len, batch_size=batch_paired,ext_dir = ext_dir, num_ext_per_class=num_ext_per_class)
@@ -514,7 +515,7 @@ class batch_generator_encoder_2_subj(Sequence):
 
 class batch_generator_encoder_2_subj_new(Sequence):
     def __init__(self, X_1, Y_1, X_2, Y_2, train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_shared     = batch_generator_2_subj_new(X_1,X_2, Y_1,Y_2, batch_size=batch_paired, labels = train_labels,max_shift = max_shift_enc)
         self.gen_ext_im     = batch_generator_external_images(img_size = img_len, batch_size=batch_paired,ext_dir = ext_dir, num_ext_per_class=num_ext_per_class)
@@ -534,7 +535,7 @@ class batch_generator_encoder_2_subj_new(Sequence):
 
 class batch_generator_encoder_3_subj(Sequence):
     def __init__(self, X_1, Y_1, X_2, Y_2, X_3, Y_3, train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_shared        = batch_generator_3_subj_shared(X_1,Y_1,X_2,Y_2,X_3, Y_3, batch_size=batch_paired, labels = train_labels)
         self.gen_ext_im     = batch_generator_external_images(img_size = img_len, batch_size=batch_paired,ext_dir = ext_dir, num_ext_per_class=num_ext_per_class)
@@ -554,7 +555,7 @@ class batch_generator_encoder_3_subj(Sequence):
 
 class batch_generator_encoder_3_subj(Sequence):
     def __init__(self, X_1, Y_1, X_2, Y_2, X_3, Y_3, train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_shared        = batch_generator_3_subj_shared(X_1,Y_1,X_2,Y_2,X_3, Y_3, batch_size=batch_paired, labels = train_labels)
         self.gen_ext_im     = batch_generator_external_images(img_size = img_len, batch_size=batch_paired,ext_dir = ext_dir, num_ext_per_class=num_ext_per_class)
@@ -574,7 +575,7 @@ class batch_generator_encoder_3_subj(Sequence):
 class batch_generator_encoder_2_subj_NSD(Sequence):
     def __init__(self, X_1, Y_1, X_2, Y_2,X_1_s, Y_1_s, X_2_s, Y_2_s, train_labels = None, batch_paired = 48, batch_unpaired = 16, 
                  max_shift_enc = 5, img_len = 112, frac_test = 3,
-                 ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, 
+                 ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, 
                  ignore_test_fmri_labels = None, non_shared=True, ext_imgs=True,to_grey = 0 ):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_shared        = batch_generator_2_subj(X_1_s,X_2_s, Y_1_s, Y_2_s, batch_size=batch_paired, labels = train_labels)
@@ -601,7 +602,7 @@ class batch_generator_encoder_2_subj_NSD(Sequence):
 
 class batch_generator_encoder_2_subj_NSD_new(Sequence):
     def __init__(self, X_1, Y_1, X_2, Y_2,X_1_s, Y_1_s, X_2_s, Y_2_s,Y_1_avg,Y_1_avg_s,Y_2_avg,Y_2_avg_s, train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_shared        = batch_generator_2_subj_with_add_avg(X_1_s,X_2_s, Y_1_s, Y_2_s,Y_1_avg_s,Y_2_avg_s, batch_size=batch_paired, labels = train_labels)
         self.gen_dec_1        = batch_generator_dec_with_avg(X_1, Y_1,Y_1_avg, batch_size=batch_paired, labels = train_labels)
@@ -630,7 +631,7 @@ class batch_generator_encoder_2_subj_NSD_new(Sequence):
 
 class batch_generator_subj_transf_NSD(Sequence):
     def __init__(self, X_1, Y_1, X_2, Y_2,X_1_s, Y_1_s, X_2_s, Y_2_s, train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_shared        = batch_generator_2_subj(X_1_s,X_2_s, Y_1_s, Y_2_s, batch_size=batch_paired, labels = train_labels)
         self.gen_dec_1        = batch_generator_dec(X_1, Y_1, batch_size=batch_paired, labels = train_labels)
@@ -659,7 +660,7 @@ class batch_generator_subj_transf_NSD(Sequence):
 class batch_generator_subj_transf_NSD_new(Sequence):
     def __init__(self, X_1, Y_1, X_2, Y_2,X_1_s, Y_1_s, X_2_s, Y_2_s,Y_1_avg,Y_1_avg_s,Y_2_avg,Y_2_avg_s,\
          train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_shared        = batch_generator_2_subj_with_add_avg(X_1_s,X_2_s, Y_1_s, Y_2_s,Y_1_avg_s,Y_2_avg_s, batch_size=batch_paired, labels = train_labels)
         self.gen_dec_1        = batch_generator_dec_with_avg(X_1, Y_1,Y_1_avg, batch_size=batch_paired, labels = train_labels)
@@ -692,7 +693,7 @@ class batch_generator_subj_transf_NSD_new(Sequence):
 
 class batch_generator_encdec_with_augm(Sequence):
     def __init__(self, X, Y, Y_test, test_labels, train_labels = None, batch_paired = 48, batch_unpaired = 16, max_shift_enc = 5, img_len = 112
-                 , frac_test = 3,ext_dir =  '/net/mraid11/export/data/navvew/SSReconstnClass/data/ImageNet_Files/train_images', num_ext_per_class=150, ignore_test_fmri_labels = None):
+                 , frac_test = 3,ext_dir =  EXT_IMAGES_DIR, num_ext_per_class=150, ignore_test_fmri_labels = None):
         self.batch_size     = batch_paired+batch_unpaired
         self.gen_dec        = batch_generator_dec(X, Y, batch_size=batch_paired, labels = train_labels)
         self.gen_enc        = batch_generator_enc(X, Y, batch_size=batch_paired,max_shift = max_shift_enc, labels = train_labels)
