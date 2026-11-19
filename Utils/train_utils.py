@@ -478,8 +478,9 @@ def test_model_and_print(model,x,y, bacth_size=16, num_batches=30):
     for i in range(y.shape[1]):
         corr[i] = stat.pearsonr(y[:, i], y_predict[:, i])[0]
     corr = np.nan_to_num(corr)
-    print('test corr median = ' +str(np.mean(corr)))
-    print('test corr mean = ' +str(np.median(corr)))
+    # etichette corrette (nell'originale 'median' e 'mean' erano scambiate)
+    print('test corr mean = ' +str(np.mean(corr)))
+    print('test corr median = ' +str(np.median(corr)))
     print('test corr 75 = ' +str(np.percentile(corr,75)))
     print('test corr 90 = ' +str(np.percentile(corr,90)))
     

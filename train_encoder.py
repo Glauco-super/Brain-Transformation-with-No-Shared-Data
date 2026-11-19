@@ -114,13 +114,16 @@ if __name__ == '__main__':
     print("fitting...")
     model.fit_generator(loader_train, validation_data=loader_test, epochs=epochs, verbose=0,
                         callbacks=callback_list, workers=1, use_multiprocessing=True)  # epochs
-    print('Correlation Results of the Transforatmion on the Test Set:')
-    test_model_and_print(encoder_model_1,test_images_1_s,test_FMRI_2_s, bacth_size=16, num_batches=30)
-    #save models
+    #save models (spostato prima della valutazione: se la valutazione fallisce, i pesi addestrati non vanno persi)
     print("saving weights...")
     if(encoder_transf_run == 1):
         transf_net_1_to_2.save_weights(transf_weights_1_to_2)
         transf_net_2_to_1.save_weights(transf_weights_2_to_1)
     else:
         encoder_model_1.save_weights(encoder_weights_1)
+    print('saved: ' + str(encoder_weights_1))
+    # Originale: test_FMRI_2_s (fMRI dell'insegnante) -> errore di dimensioni. L'encoder dello studente
+    # predice l'fMRI dello studente, quindi il confronto va fatto con test_FMRI_1_s (come descritto nel README).
+    print('Correlation Results of the Encoder on the Test Set:')
+    test_model_and_print(encoder_model_1,test_images_1_s,test_FMRI_1_s, bacth_size=16, num_batches=30)
 
