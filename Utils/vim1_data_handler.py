@@ -96,4 +96,4 @@ class vim1_data_handler():
 
         return dict_
 
-handler = vim1_data_handler()
+# handler = vim1_data_handler()  # disattivato: istanza non usata, all'import caricava Vim-1 dal server degli autori
