@@ -37,6 +37,18 @@ if __name__ == '__main__':
     transf_weights_2_to_1  = prepare_all_params(encoder_transf_run,share_non_share_param,exp_array_s,exp_array_ns,exp_array_s_2,exp_array_ns_2,\
                                                 exp_teacher_s_ns, subject_student_1_data,subject_student_2_data,teacher_subject_data,ref,subject_1,subject_1,teacher_subject)
 
+    # Ripetizioni: se la variabile d'ambiente B2B_RUN_TAG e' impostata (es. rep1), viene aggiunta
+    # al nome dei file dei pesi salvati, cosi' esecuzioni ripetute non si sovrascrivono.
+    # Senza la variabile il comportamento e' identico all'originale. I pesi dell'insegnante
+    # (encoder_weights_2, solo letti) non vengono toccati.
+    run_tag = os.environ.get('B2B_RUN_TAG', '')
+    if run_tag:
+        encoder_weights_1 = encoder_weights_1.replace('.hdf5', '_' + run_tag + '.hdf5')
+        if transf_weights_1_to_2:
+            transf_weights_1_to_2 = transf_weights_1_to_2.replace('.hdf5', '_' + run_tag + '.hdf5')
+            transf_weights_2_to_1 = transf_weights_2_to_1.replace('.hdf5', '_' + run_tag + '.hdf5')
+        print('run tag: ' + run_tag + ' -> pesi salvati in ' + encoder_weights_1)
+
     if(subject_student_1_data==1):
         dataset = 'NSD'
     else:
