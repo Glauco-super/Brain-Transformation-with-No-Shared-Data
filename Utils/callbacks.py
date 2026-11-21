@@ -16,6 +16,23 @@ class EpochProgressPrinter(keras.callbacks.Callback):
     def on_epoch_begin(self, epoch, logs=None):
         print(f"Epoch {epoch + 1}/{self.params['epochs']}")
 
+    def on_epoch_end(self, epoch, logs=None):
+        # Stampa a fine epoca: loss totale (train e validazione), learning rate e ogni
+        # componente della loss. Le componenti sono quelle non pesate; la loss totale e' la
+        # somma pesata (loss_weights) piu' le regolarizzazioni.
+        logs = logs or {}
+        nan = float('nan')
+        train = {k: v for k, v in logs.items() if not k.startswith('val_')}
+        val = {k[4:]: v for k, v in logs.items() if k.startswith('val_')}
+        try:
+            lr = float(keras.backend.get_value(self.model.optimizer.lr))
+        except Exception:
+            lr = nan
+        print('  loss totale: train %.5f | val %.5f | lr %.2e' % (train.get('loss', nan), val.get('loss', nan), lr), flush=True)
+        for k in sorted(train):
+            if k != 'loss':
+                print('    %-34s train %.5f | val %.5f' % (k, train[k], val.get(k, nan)), flush=True)
+
 class log_image_collage_callback(keras.callbacks.Callback):
     def __init__(self, Y, X, model, dir = '',freq = 10):
         self.Y = Y

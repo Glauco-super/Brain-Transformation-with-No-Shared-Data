@@ -11,6 +11,10 @@ if __name__ == '__main__':
     import sys
     os.environ["CUDA_VISIBLE_DEVICES"] =  sys.argv[1]
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+    # Seed (Python, NumPy, TensorFlow): valori in Utils/params/param_seeds.py,
+    # sovrascrivibili con le variabili d'ambiente B2B_SEED e B2B_DETERMINISTIC.
+    from Utils.seeds import set_seeds
+    set_seeds()
     from datetime import datetime
     from keras.callbacks import LearningRateScheduler, TensorBoard
     from Utils.image_loss import *
@@ -40,6 +44,15 @@ if __name__ == '__main__':
             encoder_weights_1,extra_subj_1,encoder_weights_2,extra_subj_2,transf_weights_1_to_2,\
     transf_weights_2_to_1  = prepare_all_params(encoder_transf_run,share_non_share_param,exp_array_s,exp_array_ns,exp_array_s_2,exp_array_ns_2,\
                                                 exp_teacher_s_ns, subject_student_1_data,subject_student_2_data,teacher_subject_data,ref,subject_1,subject_2,teacher_subject)
+
+    # Ripetizioni: se la variabile d'ambiente B2B_RUN_TAG e' impostata (es. rep1), viene aggiunta
+    # al nome dei file dei pesi salvati, cosi' esecuzioni ripetute non si sovrascrivono.
+    # I pesi degli encoder (solo letti) non vengono toccati.
+    run_tag = os.environ.get('B2B_RUN_TAG', '')
+    if run_tag:
+        transf_weights_1_to_2 = transf_weights_1_to_2.replace('.hdf5', '_' + run_tag + '.hdf5')
+        transf_weights_2_to_1 = transf_weights_2_to_1.replace('.hdf5', '_' + run_tag + '.hdf5')
+        print('run tag: ' + run_tag)
 
     if(subject_student_1_data==1):
         dataset_1 = 'NSD'
@@ -134,13 +147,15 @@ if __name__ == '__main__':
     print("fitting...")
     model.fit_generator(loader_train, validation_data=loader_test, epochs=epochs, verbose=0,
                         callbacks=callback_list, workers=1, use_multiprocessing=True)  # epochs
-    print('Correlation Results of the Transforatmion on the Test Set:')
-    test_model_and_print(transf_net_1_to_2,test_FMRI_1_s,test_FMRI_2_s, bacth_size=16, num_batches=30)
-    #save models
+    #save models (spostato prima della valutazione: se la valutazione fallisce, i pesi addestrati non vanno persi)
     print("saving weights...")
     if(encoder_transf_run == 1):
         transf_net_1_to_2.save_weights(transf_weights_1_to_2)
         transf_net_2_to_1.save_weights(transf_weights_2_to_1)
+        print('saved: ' + str(transf_weights_1_to_2))
+        print('saved: ' + str(transf_weights_2_to_1))
     else:
         encoder_model_1.save_weights(encoder_weights_1)
+    print('Correlation Results of the Transforatmion on the Test Set:')
+    test_model_and_print(transf_net_1_to_2,test_FMRI_1_s,test_FMRI_2_s, bacth_size=16, num_batches=30)
 

@@ -11,6 +11,10 @@ if __name__ == '__main__':
     import sys
     os.environ["CUDA_VISIBLE_DEVICES"] =  sys.argv[1]
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+    # Seed (Python, NumPy, TensorFlow): valori in Utils/params/param_seeds.py,
+    # sovrascrivibili con le variabili d'ambiente B2B_SEED e B2B_DETERMINISTIC.
+    from Utils.seeds import set_seeds
+    set_seeds()
     from datetime import datetime
     from keras.callbacks import LearningRateScheduler, TensorBoard
     from Utils.image_loss import *
