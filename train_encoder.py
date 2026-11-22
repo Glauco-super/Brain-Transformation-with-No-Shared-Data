@@ -60,6 +60,13 @@ if __name__ == '__main__':
     print('Training Encoder Subject ' +str(subject_1) +',Dataset ' + str(dataset) + ', shared_examples=' + str(exp_s) + ', nonshared_examples='+str(exp_ns) + '  ' + \
           extra_teacher.split('_exp')[0][1:])
 
+    # File degli encoder: quello dell'insegnante viene caricato (congelato), quello dello studente
+    # viene addestrato e salvato a fine training.
+    if(ref == 0):
+        print('encoder insegnante (caricato): ' + str(encoder_weights_2))
+    else:
+        print('encoder insegnante: nessuno (ref=1)')
+    print('encoder studente (verra salvato in): ' + str(encoder_weights_1))
     # Load subjects data
     print("loading data and encoders...")
     train_FMRI_1_s,train_FMRI_2_s,NUM_VOXELS_1,NUM_VOXELS_2,encoder_model_1,encoder_model_2,train_images_1, train_FMRI_1, train_images_2,\

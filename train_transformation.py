@@ -70,6 +70,14 @@ if __name__ == '__main__':
         else:
             extra_tmp = ''
         print('Exploiting Data using Encoders ' + extra_tmp)
+    # File degli encoder che load_data_and_encoders carichera' (congelati): '_ref' = baseline,
+    # '_with_subj...' = encoder addestrato con un insegnante.
+    # Con ref=1 load_data_and_encoders NON carica alcun peso: gli encoder restano inizializzati a caso.
+    if(ref == 0):
+        print('encoder soggetto 1 (caricato): ' + str(encoder_weights_1))
+        print('encoder soggetto 2 (caricato): ' + str(encoder_weights_2))
+    else:
+        print('encoder: nessun peso caricato (ref=1), encoder inizializzati a caso')
 
     # Load subjects data
     print("loading data and encoders...")

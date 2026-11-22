@@ -87,7 +87,7 @@ def encoder_2_subj_NSD(NUM_VOXELS_1,NUM_VOXELS_2,RESOLUTION,encoder_model_1,enco
     if enc_loss_l2:
         enc_loss = l2_loss
     else:
-        enc_loss = combined_voxel_loss_noSNR#lambda fmri1_2: combined_voxel_loss_noSNR(fmri1_2[0],fmri1_2[1], cosine_w=cosine_w)
+        enc_loss = combined_voxel_loss_noSNR #lambda fmri1_2: combined_voxel_loss_noSNR(fmri1_2[0],fmri1_2[1], cosine_w=cosine_w)
 
     ## Encoding ###
     encoding_1_loss = Lambda(lambda x:enc_loss(x[0],x[1]))([enc_1,FMRI_1]) 

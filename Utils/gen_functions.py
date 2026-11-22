@@ -1,8 +1,8 @@
 import numpy as np
 import scipy.stats as stat
 
-
-def calc_snr(y, y_avg, labels):
+# usato solo per GOD
+def calc_snr(y, y_avg, labels): 
     sig = np.var(y_avg, axis=0)
     noise = 0
     for l in labels:
