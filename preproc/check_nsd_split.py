@@ -15,6 +15,10 @@ Predefiniti: soggetto 1, pesi data/NSD_encoders/encoder_weights_subj1_NSD_exp_s_
 """
 import os
 import sys
+# Lo script sta in preproc/: aggiungo la cartella del repository al percorso di ricerca dei
+# moduli, cosi' 'Utils' e 'Models' si importano anche lanciandolo come preproc/check_nsd_split.py.
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, REPO_ROOT)
 os.environ.setdefault('CUDA_VISIBLE_DEVICES', '')
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
