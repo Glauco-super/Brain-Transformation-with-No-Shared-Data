@@ -42,6 +42,13 @@ def Load_NSD_data(cur_subj_num,save_dir = save_dir,func_type = 'fsaverage', res 
         ind_out = torch.nonzero(FMRI_ordered_10k.std(0) != 0)
         FMRI_ordered_10k = FMRI_ordered_10k[:,ind_out[:,0]]
         Images_ordered_10k = torch.load(save_dir+'Images_ordered_10k_subj0'+str(cur_subj_num)+ '_' + func_type + '_' + processing_type + res_text + '.pt')/divide_num
+        # Correzione: i file della demo contengono le immagini in scala 0-255, ma gli encoder
+        # (encoder_ml_seperable) si aspettano input in [0, 1] e li moltiplicano per 255 al primo livello.
+        # Con 0-255 l'encoder NSD pre-addestrato in inferenza da' MSE ~9000 invece di ~0.37
+        # (preproc/check_nsd_split.py). GOD e immagini esterne sono gia' in [0, 1].
+        if float(Images_ordered_10k.max()) > 1.5:
+                Images_ordered_10k = Images_ordered_10k / 255.0
+                print('NSD subj0' + str(cur_subj_num) + ': immagini riscalate da [0, 255] a [0, 1]')
         Images_ordered_10k_labels = torch.transpose(torch.load(save_dir+'Images_ordered_10k_labels_subj0'+str(cur_subj_num)+ '_' + func_type + '_' + processing_type+'.pt'),0,1)
 
         Shared_mask = torch.load(save_dir+'shared_mask_subj0'+str(cur_subj_num)+'.pt')

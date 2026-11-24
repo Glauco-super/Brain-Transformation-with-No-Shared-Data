@@ -82,8 +82,11 @@ for i in worst:
 print('\n== 4) Stesso encoder con le immagini NSD divise per 255 (scala 0-1)', flush=True)
 # Il primo livello dell'encoder (encoder_ml_seperable) moltiplica l'input per 255:
 # si aspetta immagini in [0, 1]. Se con /255 l'MSE torna ~1, le immagini NSD vanno riscalate.
-evaluate('train/255', encoder, tr_im / 255.0, tr_f, n=300)
-evaluate('test/255', encoder, te_im / 255.0, te_f)
+if tr_im.max() > 1.5:
+    evaluate('train/255', encoder, tr_im / 255.0, tr_f, n=300)
+    evaluate('test/255', encoder, te_im / 255.0, te_f)
+else:
+    print('immagini gia in [0, 1] (Load_NSD_data le riscala): controllo non necessario')
 
 print('\n== 5) Scala delle immagini GOD (per confronto)', flush=True)
 god = np.load('data/Processed_data/GOD/images_112.npz')
