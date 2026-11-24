@@ -78,3 +78,14 @@ worst = np.argsort(mse_te)[::-1][:5]
 for i in worst:
     print('  test #%4d label %6d  MSE %.4f  | immagine min/max %.3f/%.3f | fMRI min/max %.3f/%.3f'
           % (i, int(te_l[i]), mse_te[i], te_im[i].min(), te_im[i].max(), te_f[i].min(), te_f[i].max()), flush=True)
+
+print('\n== 4) Stesso encoder con le immagini NSD divise per 255 (scala 0-1)', flush=True)
+# Il primo livello dell'encoder (encoder_ml_seperable) moltiplica l'input per 255:
+# si aspetta immagini in [0, 1]. Se con /255 l'MSE torna ~1, le immagini NSD vanno riscalate.
+evaluate('train/255', encoder, tr_im / 255.0, tr_f, n=300)
+evaluate('test/255', encoder, te_im / 255.0, te_f)
+
+print('\n== 5) Scala delle immagini GOD (per confronto)', flush=True)
+god = np.load('data/Processed_data/GOD/images_112.npz')
+stats('GOD train img', god['train_images'])
+stats('GOD test img', god['test_images'])
