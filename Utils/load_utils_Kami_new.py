@@ -119,7 +119,10 @@ def get_data_newK(subject,include_roi = 0,get_train_avg= 0,num_sample = 6000,Vox
     file= np.load(dir+'ext_images_test_112.npz')
     ext_img_test = file['img_112']
 
-    file= np.load(dir+'images_112.npz') #_56
+    # Percorso configurabile (Utils/params/param_paths.py, variabile B2B_GOD_IMAGES)
+    from Utils.params.param_paths import GOD_IMAGES_NPZ
+    print('immagini GOD: ' + GOD_IMAGES_NPZ, flush=True)
+    file= np.load(GOD_IMAGES_NPZ) #_56
 
     X = file['train_images']
     X_test = file['test_images']
